@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, IonicPage } from 'ionic-angular';
+import { NavController, IonicPage, AlertController } from 'ionic-angular';
 
 @IonicPage()
 
@@ -9,8 +9,21 @@ import { NavController, IonicPage } from 'ionic-angular';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, public alertCtrl: AlertController) {
 
+  }
+
+  login(){
+    this.navCtrl.setRoot('CategoriasPage')
+  }
+
+  showAlert() {
+    const alert = this.alertCtrl.create({
+      title: 'Oops!',
+      subTitle: 'Página está em construção. Aguarde :)',
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
 }

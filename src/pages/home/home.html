@@ -17,12 +17,12 @@
   </ion-list>
 
   <p id="login-button">
-    <button ion-button round icon-start>
+    <button ion-button round icon-start (click)='login()'>
       <ion-icon name="lock"></ion-icon>
       Entrar
     </button>
 
-    <button ion-button round outline icon-start>
+    <button ion-button round outline icon-start (click)='showAlert()'>
         <ion-icon name="list-box"></ion-icon>
         Registrar
       </button>
