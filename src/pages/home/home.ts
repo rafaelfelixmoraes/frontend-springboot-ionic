@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, IonicPage, AlertController, MenuController } from 'ionic-angular';
+import { NavController, IonicPage, AlertController, MenuController, LoadingController } from 'ionic-angular';
 import { CredenciaisDTO } from '../../models/credenciais.dto';
 import { AuthService } from '../../services/auth.service';
 
@@ -10,7 +10,6 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: 'home.html'
 })
 export class HomePage {
-
   credencials: CredenciaisDTO = {
     email : "",
     senha : ""
@@ -20,7 +19,8 @@ export class HomePage {
     public navCtrl: NavController, 
     public alertCtrl: AlertController, 
     public menu: MenuController,
-    public authService: AuthService) {
+    public authService: AuthService,
+    private loadingCtrl: LoadingController) {
 
   }
 
@@ -33,20 +33,31 @@ export class HomePage {
   }
 
   login(){
+    this.presentLoading();
     this.authService.authenticate(this.credencials)
       .subscribe(response => {
-        console.log(response.headers.get("Authorization"));
+          console.log(response.headers.get("Authorization"));
         this.navCtrl.setRoot('CategoriasPage')
-      }, error => {});
+      }, error => {
+          this.showAlert("Erro ao tentar realizar Login");
+      });
   }
 
-  showAlert() {
-    const alert = this.alertCtrl.create({
+  showAlert(message: string) : Promise<any>{
+    let alert = this.alertCtrl.create({
       title: 'Oops!',
-      subTitle: 'Página em construção. Aguarde :)',
-      buttons: ['OK']
+      subTitle: message,
+      buttons: [{text: 'OK', role: 'cancel'}]
     });
-    alert.present();
+    return alert.present();
+  }
+
+  presentLoading() : Promise<any> {
+    const loader = this.loadingCtrl.create({
+      content: "Please wait...",
+      duration: 3000
+    });
+    return loader.present();
   }
 
 }
