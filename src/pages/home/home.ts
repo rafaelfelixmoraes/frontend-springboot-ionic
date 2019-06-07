@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, IonicPage, AlertController, MenuController } from 'ionic-angular';
+import { CredenciaisDTO } from '../../models/credenciais.dto';
 
 @IonicPage()
 
@@ -8,6 +9,11 @@ import { NavController, IonicPage, AlertController, MenuController } from 'ionic
   templateUrl: 'home.html'
 })
 export class HomePage {
+
+  credencials: CredenciaisDTO = {
+    email : "",
+    senha : ""
+  }
 
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, public menu: MenuController) {
 
@@ -22,13 +28,14 @@ export class HomePage {
   }
 
   login(){
+    console.log(this.credencials);
     this.navCtrl.setRoot('CategoriasPage')
   }
 
   showAlert() {
     const alert = this.alertCtrl.create({
       title: 'Oops!',
-      subTitle: 'Página está em construção. Aguarde :)',
+      subTitle: 'Página em construção. Aguarde :)',
       buttons: ['OK']
     });
     alert.present();
