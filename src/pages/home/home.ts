@@ -37,9 +37,10 @@ export class HomePage {
     this.authService.authenticate(this.credencials)
       .subscribe(response => {
           console.log(response.headers.get("Authorization"));
-        this.navCtrl.setRoot('CategoriasPage')
+        this.authService.successfulLogin(response.headers.get("Authorization"));
+        this.navCtrl.setRoot('CategoriasPage');
       }, error => {
-          this.showAlert("Erro ao tentar realizar Login");
+        this.showAlert("Erro ao tentar realizar Login");
       });
   }
 
@@ -55,7 +56,7 @@ export class HomePage {
   presentLoading() : Promise<any> {
     const loader = this.loadingCtrl.create({
       content: "Please wait...",
-      duration: 3000
+      duration: 2000
     });
     return loader.present();
   }
