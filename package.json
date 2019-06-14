@@ -1,8 +1,8 @@
 {
-  "name": "CursoSpringIonic",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "curso-spring-ionic",
+  "version": "1.0.1",
+  "author": "Rafael Felix de Moraes",
+  "homepage": "https://rafaelfelixmoraes.github.io/",
   "private": true,
   "scripts": {
     "start": "ionic-app-scripts serve",
