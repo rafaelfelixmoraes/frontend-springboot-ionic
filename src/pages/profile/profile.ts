@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { StorageService } from '../../services/storage.service';
+import { ClienteService } from '../../services/domain/cliente.service';
+import { ClienteDTO } from '../../models/cliente.dto';
+import { API_CONFIG } from '../../config/api.config';
 
 @IonicPage()
 @Component({
@@ -9,19 +12,34 @@ import { StorageService } from '../../services/storage.service';
 })
 export class ProfilePage {
 
-  email: string;
+  cliente: ClienteDTO;
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
-    public storage: StorageService) {
+    public storage: StorageService,
+    public clienteService: ClienteService) {
   }
 
   ionViewDidLoad() {
     let localUser = this.storage.getLocalUser();
     if(localUser && localUser.email){
-      this.email = localUser.email;
+      this.clienteService.findByEmail(localUser.email)
+      .subscribe(response => {
+        this.cliente = response;
+        // Buscar no Cloudinary a imagem do cliente
+        this.getImageIfExists();
+      }, 
+      error => {});
     }
+  }
+
+  getImageIfExists() {
+    this.clienteService.getImageFromCloudinary(this.cliente.id)
+    .subscribe(response => {
+      this.cliente.imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/profiles/cp${this.cliente.id}.jpg`;
+    },
+    error => {});
   }
 
 }
