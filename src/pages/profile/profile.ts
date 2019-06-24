@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { StorageService } from '../../services/storage.service';
 import { ClienteService } from '../../services/domain/cliente.service';
 import { ClienteDTO } from '../../models/cliente.dto';
@@ -18,7 +18,8 @@ export class ProfilePage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public storage: StorageService,
-    public clienteService: ClienteService) {
+    public clienteService: ClienteService,
+    public alertCtrl: AlertController) {
   }
 
   ionViewDidLoad() {
@@ -30,7 +31,15 @@ export class ProfilePage {
         // Buscar no Cloudinary a imagem do cliente
         this.getImageIfExists();
       }, 
-      error => {});
+      error => {
+        if(error.status == 403){
+          this.showAlert('Sessão expirada. Realize o login novamente');
+          this.navCtrl.setRoot('HomePage');
+        }
+      });
+    } else {
+      this.showAlert('Ocorreu um erro inesperado. Realize o login novamente');
+      this.navCtrl.setRoot('HomePage');
     }
   }
 
@@ -40,6 +49,15 @@ export class ProfilePage {
       this.cliente.imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/profiles/cp${this.cliente.id}.jpg`;
     },
     error => {});
+  }
+
+  showAlert(message: string) : Promise<any>{
+    let alert = this.alertCtrl.create({
+      title: 'Oops!',
+      subTitle: message,
+      buttons: [{text: 'OK', role: 'cancel'}]
+    });
+    return alert.present();
   }
 
 }
