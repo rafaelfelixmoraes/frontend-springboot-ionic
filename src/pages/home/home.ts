@@ -39,7 +39,6 @@ export class HomePage {
         this.authService.successfulLogin(response.headers.get("Authorization"));
         this.navCtrl.setRoot('CategoriasPage');
       }, error => {
-        this.showAlert("Erro ao tentar realizar Login");
       });
   }
 

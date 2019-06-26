@@ -33,19 +33,6 @@ export class CategoriasPage {
     .subscribe(response => {
       this.items = response;
     }, error => {
-      this.showAlert();
     })
   }
-
-  showAlert() {
-    const alert = this.alertCtrl.create({
-      title: 'Oops!',
-      subTitle: 'Ocorreu um erro ao listar as Categorias.',
-      buttons: ['OK']
-    });
-    alert.present().then(() => {
-      this.navCtrl.setRoot('HomePage');
-    });
-  }
-
 }
