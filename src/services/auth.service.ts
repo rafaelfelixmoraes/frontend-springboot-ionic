@@ -23,6 +23,14 @@ export class AuthService {
         });
     }
 
+    refreshToken(){
+        return this.httpClient.post(`${API_CONFIG.baseUrl}/auth/refresh_token`, {}, 
+        {
+            observe : 'response',
+            responseType : 'text' 
+        });
+    }
+
     successfulLogin(authorizationValue : string){
         let tk = authorizationValue.substring(7);
         let user : LocalUser = {
