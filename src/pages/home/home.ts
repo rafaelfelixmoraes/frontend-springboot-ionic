@@ -51,6 +51,10 @@ export class HomePage {
       });
   }
 
+  signup(){
+    this.navCtrl.push('SignupPage');
+  }
+
   showAlert(message: string) : Promise<any>{
     let alert = this.alertCtrl.create({
       title: 'Oops!',
