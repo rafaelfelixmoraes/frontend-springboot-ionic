@@ -5,6 +5,7 @@ import { CidadeService } from '../../services/domain/cidade.service';
 import { EstadoService } from '../../services/domain/estado.service';
 import { EstadoDTO } from '../../models/estado.dto';
 import { CidadeDTO } from '../../models/cidade.dto';
+import { ClienteService } from '../../services/domain/cliente.service';
 
 @IonicPage()
 @Component({
@@ -23,7 +24,8 @@ export class SignupPage {
     public alertCtrl: AlertController,
     public formBuilder: FormBuilder,
     public cidadeService: CidadeService,
-    public estadoService: EstadoService) {
+    public estadoService: EstadoService,
+    public clienteService: ClienteService) {
 
       this.formGroup = this.formBuilder.group({
         nome: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
@@ -63,14 +65,24 @@ export class SignupPage {
   }
 
   signupUser(){
-    this.showAlert('Teste de envio de formulário');
+    console.log(this.formGroup.value);
+    this.clienteService.insertUser(this.formGroup.value)
+      .subscribe(response => {
+        this.showAlert("Cadastro efetuado com sucesso!");
+      }, errors => {})
+
   }
 
   showAlert(message: string) : Promise<any>{
     let alert = this.alertCtrl.create({
-      title: 'Oops!',
-      subTitle: message,
-      buttons: [{text: 'OK', role: 'cancel'}]
+      title: 'Novo Cadastro',
+      message: message,
+      enableBackdropDismiss: false,
+      buttons: [{
+        text: 'OK', 
+        handler: () => {
+          this.navCtrl.pop();
+        }}]
     });
     return alert.present();
   }

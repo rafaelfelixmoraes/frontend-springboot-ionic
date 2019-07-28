@@ -9,6 +9,7 @@ import {
 import { Observable } from 'rxjs/Rx';
 import { StorageService } from '../services/storage.service';
 import { AlertController } from 'ionic-angular';
+import { FieldMessage } from '../models/fieldmessage';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -37,6 +38,10 @@ export class ErrorInterceptor implements HttpInterceptor {
         case 403:
           this.handle403();
           break;
+        
+        case 422:
+          this.handle422(errorObj);
+          break;
 
         default:
           this.handleDefaultError(errorObj);
@@ -51,6 +56,26 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   handle401(){
     this.showAlert('Falha na autenticação. Login e Senha incorretos');
+  }
+
+  handle422(errorObj){
+    let alert = this.alertCtrl.create({
+      title: 'Erro de Validação',
+      message: this.listErrors(errorObj.errors),
+      enableBackdropDismiss: false,
+      buttons: [{
+        text: 'OK'
+      }]
+    });
+    return alert.present();
+  }
+
+  private listErrors(messages : FieldMessage[]): string{
+    let list : string = '';
+    for(var i=0; i < messages.length; i++){
+      list = list + '<p><strong>' + messages[i].fieldName + '</strong>: ' + messages[i].message + '</p>';
+    }
+    return list;
   }
 
   handleDefaultError(errorObj){

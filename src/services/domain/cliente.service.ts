@@ -20,4 +20,15 @@ export class ClienteService {
         let imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/profiles/cp${id}.jpg`;
         return this.httpClient.get(imageUrl, {responseType : 'blob'});
     }
+
+    insertUser(obj : ClienteDTO){
+        return this.httpClient.post(
+            `${API_CONFIG.baseUrl}/clientes`,
+            obj,
+            {
+                observe: 'response',
+                responseType: 'text'
+            }
+        )
+    }
 }
