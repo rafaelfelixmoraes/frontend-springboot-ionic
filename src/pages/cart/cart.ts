@@ -14,6 +14,7 @@ import { ProdutoDTO } from '../../models/produto.dto';
 export class CartPage {
 
   items: CartItem[];
+  isCartEmpty = false;
 
   constructor(
     public navCtrl: NavController, 
@@ -25,6 +26,7 @@ export class CartPage {
   ionViewDidLoad() {
     let cart = this.cartService.getCart();
     this.items = cart.items;
+    this.checkCartEmpty();
     this.loadImageUrls();
   }
 
@@ -41,6 +43,7 @@ export class CartPage {
 
   removeItem(produto : ProdutoDTO){
     this.items = this.cartService.removeProduto(produto).items;
+    this.checkCartEmpty();
   }
 
   increaseQuantity(produto : ProdutoDTO){
@@ -49,6 +52,7 @@ export class CartPage {
 
   decreaseQuantity(produto : ProdutoDTO){
     this.items = this.cartService.decreaseQuantity(produto).items;
+    this.checkCartEmpty();
   }
 
   cartTotal() : number {
@@ -57,6 +61,16 @@ export class CartPage {
 
   goOn(){
     this.navCtrl.setRoot('CategoriasPage');
+  }
+
+  checkout(){
+    this.navCtrl.push('PickAddressPage');
+  }
+
+  checkCartEmpty(){
+    if(this.items.length == 0){
+      this.isCartEmpty = true;
+    }
   }
 
 }

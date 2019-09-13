@@ -28,5 +28,8 @@
       <h1 style="text-align: center">Seu Carrinho está vazio</h1>
     </ion-item>
   </ion-list>
-  <button ion-button block round (click)="goOn()">Continuar comprando</button>
+  <p id="cart-button">
+    <button ion-button block round (click)="goOn()">Continuar comprando</button>
+    <button ion-button block round color="secondary" (click)="checkout()" [disabled]="isCartEmpty">Finalizar pedido</button>
+  </p>
 </ion-content>

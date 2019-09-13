@@ -3,4 +3,11 @@ page-cart {
         float: left;
         padding-right: 10px;
     }
+
+    #cart-button{
+        display: grid;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 10px;
+    }
 }
