@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { EnderecoDTO } from '../../models/endereco.dto';
 import { ClienteService } from '../../services/domain/cliente.service';
 import { StorageService } from '../../services/storage.service';
+import { PedidoDTO } from '../../models/pedido.dto';
+import { CartService } from '../../services/domain/cart.service';
 
 @IonicPage()
 @Component({
@@ -12,13 +14,15 @@ import { StorageService } from '../../services/storage.service';
 export class PickAddressPage {
 
   items : EnderecoDTO[];
+  pedido : PedidoDTO;
 
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     public clienteService: ClienteService,
     public alertCtrl: AlertController,
-    public storage: StorageService) {
+    public storage: StorageService,
+    public cartService: CartService) {
   }
 
   ionViewDidLoad() {
@@ -26,7 +30,15 @@ export class PickAddressPage {
     if(localUser && localUser.email){
       this.clienteService.findByEmail(localUser.email)
       .subscribe(response => {
+        let cart = this.cartService.getCart();
+
         this.items = response['enderecos'];
+        this.pedido = {
+          cliente : {id : response['id']},
+          enderecoDeEntrega : null,
+          pagamento : null,
+          itens : cart.items.map(item => {return {quantidade: item.quantidade, produto: {id: item.produto.id}}})
+        }
       }, 
       error => {
         if(error.status == 403){
@@ -38,6 +50,11 @@ export class PickAddressPage {
       this.showAlert('Ocorreu um erro inesperado. Realize o login novamente');
       this.navCtrl.setRoot('HomePage');
     }
+  }
+
+  nextPage(item: EnderecoDTO){
+    this.pedido.enderecoDeEntrega = {id: item.id};
+    console.log(this.pedido);
   }
 
   showAlert(message: string) : Promise<any>{
