@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { EnderecoDTO } from '../../models/endereco.dto';
+import { ClienteService } from '../../services/domain/cliente.service';
+import { StorageService } from '../../services/storage.service';
 
 @IonicPage()
 @Component({
@@ -13,44 +15,38 @@ export class PickAddressPage {
 
   constructor(
     public navCtrl: NavController, 
-    public navParams: NavParams) {
+    public navParams: NavParams,
+    public clienteService: ClienteService,
+    public alertCtrl: AlertController,
+    public storage: StorageService) {
   }
 
   ionViewDidLoad() {
-    this.items = [
-      {
-        id: "1",
-        logradouro : "Rua Quinze de Novembro",
-        numero : "300",
-        complemento : "Apto 200",
-        bairro : "Santa Mônica",
-        cep : "48293822",
-        cidade : {
-          id : "1",
-          nome : "Uberlândia",
-          estado : {
-            id : "1",
-            nome : "Minas Gerais"
-          }
+    let localUser = this.storage.getLocalUser();
+    if(localUser && localUser.email){
+      this.clienteService.findByEmail(localUser.email)
+      .subscribe(response => {
+        this.items = response['enderecos'];
+      }, 
+      error => {
+        if(error.status == 403){
+          this.showAlert('Sessão expirada. Realize o login novamente');
+          this.navCtrl.setRoot('HomePage');
         }
-      },
-      {
-        id: "2",
-        logradouro : "Rua Alexandre Toledo Silva",
-        numero : "405",
-        complemento : null,
-        bairro : "Centro",
-        cep : "88933822",
-        cidade : {
-          id : "3",
-          nome : "São Paulo",
-          estado : {
-            id : "2",
-            nome : "São Paulo"
-          }
-        }
-      }
-    ];
+      });
+    } else {
+      this.showAlert('Ocorreu um erro inesperado. Realize o login novamente');
+      this.navCtrl.setRoot('HomePage');
+    }
+  }
+
+  showAlert(message: string) : Promise<any>{
+    let alert = this.alertCtrl.create({
+      title: 'Oops!',
+      subTitle: message,
+      buttons: [{text: 'OK', role: 'cancel'}]
+    });
+    return alert.present();
   }
 
 }
