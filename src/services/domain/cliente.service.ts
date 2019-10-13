@@ -16,6 +16,11 @@ export class ClienteService {
             `${API_CONFIG.baseUrl}/clientes/email?value=${email}`);
     }
 
+    findById(id : string) {
+        return this.httpClient.get(
+            `${API_CONFIG.baseUrl}/clientes/${id}`);
+    }
+
     getImageFromCloudinary(id : string) : Observable<any>{
         let imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/profiles/cp${id}.jpg`;
         return this.httpClient.get(imageUrl, {responseType : 'blob'});
