@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController } from 'ionic-angular';
 import { CategoriaService } from '../../services/domain/categoria.service';
 import { CategoriaDTO } from '../../models/categoria.dto';
 import { API_CONFIG } from '../../config/api.config';
@@ -25,18 +25,29 @@ export class CategoriasPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public categoriaService: CategoriaService,
-    public alertCtrl: AlertController) {
+    public alertCtrl: AlertController,
+    private loadingCtrl: LoadingController) {
   }
 
   ionViewDidLoad() {
+    let loader = this.presentLoading();
     this.categoriaService.findAll()
     .subscribe(response => {
       this.items = response;
+      loader.dismiss();
     }, error => {
     })
   }
 
   showProdutos(categoria_id : string){
     this.navCtrl.push('ProdutosPage', {categoria_id: categoria_id});
+  }
+
+  presentLoading(){
+    const loader = this.loadingCtrl.create({
+      content: "Please wait..."
+    });
+    loader.present();
+    return loader;
   }
 }

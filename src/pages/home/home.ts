@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, IonicPage, AlertController, MenuController, LoadingController } from 'ionic-angular';
+import { NavController, IonicPage, AlertController, MenuController } from 'ionic-angular';
 import { CredenciaisDTO } from '../../models/credenciais.dto';
 import { AuthService } from '../../services/auth.service';
 import { StorageService } from '../../services/storage.service';
@@ -21,8 +21,7 @@ export class HomePage {
     public alertCtrl: AlertController, 
     public menu: MenuController,
     public authService: AuthService,
-    public storageService: StorageService,
-    private loadingCtrl: LoadingController) {
+    public storageService: StorageService) {
 
   }
 
@@ -46,7 +45,6 @@ export class HomePage {
   }
 
   login(){
-    this.presentLoading();
     this.authService.authenticate(this.credencials)
       .subscribe(response => {
         this.authService.successfulLogin(response.headers.get("Authorization"));
@@ -66,14 +64,6 @@ export class HomePage {
       buttons: [{text: 'OK', role: 'cancel'}]
     });
     return alert.present();
-  }
-
-  presentLoading() : Promise<any> {
-    const loader = this.loadingCtrl.create({
-      content: "Please wait...",
-      duration: 3000
-    });
-    return loader.present();
   }
 
 }
