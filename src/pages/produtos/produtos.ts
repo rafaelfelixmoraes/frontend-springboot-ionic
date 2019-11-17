@@ -13,8 +13,7 @@ export class ProdutosPage {
 
   items : ProdutoDTO[] = [];
   page : number = 0;
-  totalElements : number = 0;
-  totalPages : number = 0;
+  checkComplete : boolean = false;
   loader : Loading;
 
   constructor(
@@ -36,8 +35,9 @@ export class ProdutosPage {
         let indexStart = this.items.length;
         this.items = this.items.concat(response['content']);
         this.loader.dismiss();
-        this.totalElements = response['totalElements'];
-        this.totalPages = response['totalPages'];
+        if(response["last"] == true) {
+          this.checkComplete = true;
+        }
         let indexEnd = this.items.length - 1;
         this.loadImageUrls(indexStart, indexEnd);
       }, error =>{
@@ -71,8 +71,7 @@ export class ProdutosPage {
   doRefresh(refresher) {
     this.page = 0;
     this.items = [];
-    this.totalElements = 0;
-    this.totalPages = 0;
+    this.checkComplete = false;
     this.loadProducts();
     setTimeout(() => {
       refresher.complete();
@@ -84,7 +83,7 @@ export class ProdutosPage {
     this.loadProducts();
     setTimeout(() => {
       infiniteScroll.complete();
-      if(this.items.length >= this.totalElements && this.page >= this.totalPages - 1){
+      if(this.checkComplete){
         infiniteScroll.enable(false);
       }
     }, 2000);
