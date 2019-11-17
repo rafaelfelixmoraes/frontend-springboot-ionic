@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, Loading } from 'ionic-angular';
 import { ProdutoDTO } from '../../models/produto.dto';
 import { ProdutoService } from '../../services/domain/produto.service';
 import { API_CONFIG } from '../../config/api.config';
@@ -11,7 +11,11 @@ import { API_CONFIG } from '../../config/api.config';
 })
 export class ProdutosPage {
 
-  items : ProdutoDTO[];
+  items : ProdutoDTO[] = [];
+  page : number = 0;
+  totalElements : number = 0;
+  totalPages : number = 0;
+  loader : Loading;
 
   constructor(
     public navCtrl: NavController, 
@@ -22,23 +26,27 @@ export class ProdutosPage {
 
   ionViewDidLoad() {
     this.loadProducts();
+    this.loader = this.presentLoading();
   }
 
   loadProducts() {
     let categoria_id = this.navParams.get('categoria_id');
-    let loader = this.presentLoading();
-    this.produtoService.findByCategoria(categoria_id)
+    this.produtoService.findByCategoria(categoria_id, this.page, 10)
       .subscribe(response => {
-        this.items = response['content'];
-        loader.dismiss();
-        this.loadImageUrls();
+        let indexStart = this.items.length;
+        this.items = this.items.concat(response['content']);
+        this.loader.dismiss();
+        this.totalElements = response['totalElements'];
+        this.totalPages = response['totalPages'];
+        let indexEnd = this.items.length - 1;
+        this.loadImageUrls(indexStart, indexEnd);
       }, error =>{
-        loader.dismiss();
+        this.loader.dismiss();
       })
   }
 
-  loadImageUrls() {
-    for(var i=0; i < this.items.length; i++){
+  loadImageUrls(indexStart : number, indexEnd : number) {
+    for(var i=indexStart; i <= indexEnd; i++){
       let item = this.items[i];
       this.produtoService.getSmallImageFromCloudinary(item.id)
         .subscribe(response => {
@@ -61,9 +69,24 @@ export class ProdutosPage {
   }
 
   doRefresh(refresher) {
+    this.page = 0;
+    this.items = [];
+    this.totalElements = 0;
+    this.totalPages = 0;
     this.loadProducts();
     setTimeout(() => {
       refresher.complete();
-    }, 1000);
+    }, 2000);
+  }
+
+  doInfinite(infiniteScroll) {
+    this.page++;
+    this.loadProducts();
+    setTimeout(() => {
+      infiniteScroll.complete();
+      if(this.items.length >= this.totalElements && this.page >= this.totalPages - 1){
+        infiniteScroll.enable(false);
+      }
+    }, 2000);
   }
 }

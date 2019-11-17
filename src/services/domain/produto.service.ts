@@ -15,9 +15,9 @@ export class ProdutoService{
             `${API_CONFIG.baseUrl}/produtos/${produto_id}`);
     }
 
-    findByCategoria(categoria_id : string) {
+    findByCategoria(categoria_id : string, page : number = 0, linesPerPage : number = 24) {
         return this.httpClient.get(
-            `${API_CONFIG.baseUrl}/produtos/page/?categorias=${categoria_id}`);
+            `${API_CONFIG.baseUrl}/produtos/page/?categorias=${categoria_id}&pageNumber=${page}&linesPerPage=${linesPerPage}`);
     }
 
     getImageFromCloudinary(id : String) : Observable<any>{
