@@ -26,7 +26,7 @@ export class ClienteService {
     }
 
     getImageFromCloudinary(id : string) : Observable<any>{
-        let imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/profiles/cp${id}.jpg`;
+        let imageUrl = `${API_CONFIG.amazonS3BucketBaseUrl}/profiles/cp${id}.jpg`;
         return this.httpClient.get(imageUrl, {responseType : 'blob'});
     }
 

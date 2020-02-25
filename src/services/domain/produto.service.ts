@@ -21,12 +21,12 @@ export class ProdutoService{
     }
 
     getImageFromCloudinary(id : String) : Observable<any>{
-        let url = `${API_CONFIG.cloudinaryBaseUrl}/products/prod${id}.jpg`;
+        let url = `${API_CONFIG.amazonS3BucketBaseUrl}/products/prod${id}.jpg`;
         return this.httpClient.get(url, {responseType: 'blob'});
     }
 
     getSmallImageFromCloudinary(id : String) : Observable<any>{
-        let url = `${API_CONFIG.cloudinaryBaseUrl}/products/prod${id}-small.jpg`;
+        let url = `${API_CONFIG.amazonS3BucketBaseUrl}/products/prod${id}-small.jpg`;
         return this.httpClient.get(url, {responseType: 'blob'});
     }
 }

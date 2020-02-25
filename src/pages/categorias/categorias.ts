@@ -18,7 +18,7 @@ import { API_CONFIG } from '../../config/api.config';
 })
 export class CategoriasPage {
 
-  cloudinaryUrl: string = API_CONFIG.cloudinaryBaseUrl + "/products";
+  cloudinaryUrl: string = API_CONFIG.amazonS3BucketBaseUrl + "/products";
   items: CategoriaDTO[];
 
   constructor(

@@ -33,7 +33,7 @@ export class ProdutoDetailPage {
   loadImageUrls() {
     this.produtoService.getImageFromCloudinary(this.item.id)
       .subscribe(response => {
-        this.item.imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/products/prod${this.item.id}.jpg`;
+        this.item.imageUrl = `${API_CONFIG.amazonS3BucketBaseUrl}/products/prod${this.item.id}.jpg`;
       }, error => {});
   }
 

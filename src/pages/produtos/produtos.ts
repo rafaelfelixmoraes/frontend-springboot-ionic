@@ -50,7 +50,7 @@ export class ProdutosPage {
       let item = this.items[i];
       this.produtoService.getSmallImageFromCloudinary(item.id)
         .subscribe(response => {
-          item.imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/products/prod${item.id}-small.jpg`;
+          item.imageUrl = `${API_CONFIG.amazonS3BucketBaseUrl}/products/prod${item.id}-small.jpg`;
         }, 
         error => {});
     }

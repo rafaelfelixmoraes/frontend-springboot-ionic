@@ -54,7 +54,7 @@ export class ProfilePage {
   getImageIfExists() {
     this.clienteService.getImageFromCloudinary(this.cliente.id)
     .subscribe(response => {
-      this.cliente.imageUrl = `${API_CONFIG.cloudinaryBaseUrl}/profiles/cp${this.cliente.id}.jpg`;
+      this.cliente.imageUrl = `${API_CONFIG.amazonS3BucketBaseUrl}/profiles/cp${this.cliente.id}.jpg`;
     },
     error => {});
   }
