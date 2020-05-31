@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, SecurityContext } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { StorageService } from '../../services/storage.service';
 import { ClienteService } from '../../services/domain/cliente.service';
 import { ClienteDTO } from '../../models/cliente.dto';
 import { API_CONFIG } from '../../config/api.config';
 import { CameraOptions, Camera } from '@ionic-native/camera';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @IonicPage()
 @Component({
@@ -15,7 +16,9 @@ export class ProfilePage {
 
   cliente: ClienteDTO;
   picture: string;
-  cameraOn: boolean = false;
+  profileImage;
+  cameraOn: boolean = false;;
+  private defaultImage = 'assets/imgs/avatar-blank.png';
 
   constructor(
     public navCtrl: NavController, 
@@ -23,7 +26,10 @@ export class ProfilePage {
     public storage: StorageService,
     public clienteService: ClienteService,
     public alertCtrl: AlertController,
-    private camera : Camera) {
+    public camera : Camera,
+    public sanitizer : DomSanitizer) {
+
+      this.profileImage = this.defaultImage;
   }
 
   ionViewDidLoad() {
@@ -55,8 +61,23 @@ export class ProfilePage {
     this.clienteService.getImageFromCloudinary(this.cliente.id)
     .subscribe(response => {
       this.cliente.imageUrl = `${API_CONFIG.amazonS3BucketBaseUrl}/profiles/cp${this.cliente.id}.jpg`;
+      this.blobToDataURL(response).then(dataUrl => {
+        let imageStr : string = dataUrl as string;
+        this.profileImage = this.sanitizer.bypassSecurityTrustUrl(imageStr);
+      })
     },
-    error => {});
+    error => {
+      this.profileImage = this.defaultImage;
+    });
+  }
+
+  blobToDataURL(blob : Blob){
+    return new Promise((fullfill, reject) => {
+      let reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = (e) => fullfill(reader.result);
+      reader.readAsDataURL(blob);
+    })
   }
 
   showAlert(message: string) : Promise<any>{
@@ -107,7 +128,7 @@ export class ProfilePage {
     this.clienteService.uploadPicture(this.picture)
       .subscribe(response => {
         this.picture = null;
-        this.loadData();
+        this.getImageIfExists();
       }, error => {
       })
   }
