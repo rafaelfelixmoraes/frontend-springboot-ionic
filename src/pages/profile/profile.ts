@@ -78,9 +78,10 @@ export class ProfilePage {
     }
     
     this.camera.getPicture(options).then((imageData) => {
-     this.picture = 'data:image/jpeg;base64,' + imageData;
+     this.picture = 'data:image/png;base64,' + imageData;
      this.cameraOn = false;
     }, (err) => {
+      this.cameraOn = false;
     });
   }
 
@@ -95,9 +96,10 @@ export class ProfilePage {
     }
     
     this.camera.getPicture(options).then((imageData) => {
-     this.picture = 'data:image/jpeg;base64,' + imageData;
+     this.picture = 'data:image/png;base64,' + imageData;
      this.cameraOn = false;
     }, (err) => {
+      this.cameraOn = false;
     });
   }
 
